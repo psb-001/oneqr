@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>oneqr — builder</title>
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<header class="topbar">
+  <h1>oneqr</h1>
+  <p class="tagline">One QR · Every profile · Zero cloud</p>
+</header>
+<main>
+  <section class="card">
+    <h2>Your links</h2>
+    <div id="linkList"></div>
+    <label for="platform">Platform</label>
+    <select id="platform"></select>
+    <label for="handle">Username, handle, or URL</label>
+    <input type="text" id="handle" placeholder="@you">
+    <button class="btn tonal" id="addBtn">＋ Add link</button>
+  </section>
+  <section class="card">
+    <h2>Your QR</h2>
+    <div id="qrBox">
+      <p class="hint">Add at least one link and generate.</p>
+      <button class="btn primary" id="genBtn">Generate QR</button>
+    </div>
+  </section>
+</main>
+<script src="vendor/qrcode.min.js"></script>
+<script src="app.js"></script>
+</body>
+</html>

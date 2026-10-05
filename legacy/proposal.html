@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>oneqr — proposal</title>
+<style>
+  :root {
+    --primary:#6750A4; --on-primary:#fff; --primary-container:#EADDFF; --on-primary-container:#21005D;
+    --secondary-container:#E8DEF8; --surface:#FDF8FF; --on-surface:#1D1B20; --surface-variant:#E7E0EC;
+    --on-surface-variant:#49454F; --outline:#79747E; --tertiary-container:#FFD8E4; --success:#2E7D32;
+    --radius-xl:28px; --radius-lg:16px; --radius-md:12px;
+  }
+  * { box-sizing:border-box; }
+  body { margin:0; font-family:'Roboto',system-ui,sans-serif; background:var(--surface); color:var(--on-surface); line-height:1.55; }
+  header { background:var(--primary); color:var(--on-primary); padding:56px 24px; text-align:center; }
+  header h1 { font-size:clamp(2.2rem,6vw,4rem); margin:0; font-weight:500; letter-spacing:-0.5px; }
+  header p { opacity:.9; font-size:clamp(1rem,2.5vw,1.3rem); margin:12px 0 0; }
+  main { max-width:960px; margin:0 auto; padding:32px 20px 120px; }
+  h2 { color:var(--on-primary-container); margin-top:48px; font-weight:500; }
+  h2 span.n { display:inline-grid; place-items:center; width:36px; height:36px; border-radius:50%;
+    background:var(--primary); color:var(--on-primary); font-size:1rem; margin-right:10px; vertical-align:2px; }
+  .card { background:#fff; border:1px solid var(--surface-variant); border-radius:var(--radius-lg); padding:24px; margin:16px 0;
+    box-shadow:0 1px 3px rgba(0,0,0,.06); }
+  .pill { display:inline-block; background:var(--secondary-container); color:var(--on-primary-container);
+    border-radius:999px; padding:4px 14px; font-size:.85rem; margin:2px 4px 2px 0; }
+  .flow { display:flex; flex-wrap:wrap; gap:10px; align-items:center; }
+  .step { background:var(--primary-container); color:var(--on-primary-container); border-radius:var(--radius-md);
+    padding:12px 16px; font-weight:500; flex:1 1 130px; text-align:center; }
+  .arrow { font-size:1.4rem; color:var(--primary); }
+  .phones { display:flex; flex-wrap:wrap; gap:24px; justify-content:center; margin:24px 0; }
+  .phone { width:250px; border:2px solid var(--on-surface-variant); border-radius:32px; padding:18px 16px; background:#fff; }
+  .phone.wide { width:100%; max-width:640px; border-radius:16px; }
+  .mock-title { font-size:.75rem; color:var(--on-surface-variant); text-transform:uppercase; letter-spacing:1px; margin-bottom:10px; }
+  .mock-h1 { font-size:1.3rem; font-weight:500; margin:0 0 12px; }
+  .field { background:var(--surface-variant); border-radius:8px 8px 0 0; border-bottom:2px solid var(--primary);
+    padding:10px 12px; margin:8px 0; font-size:.9rem; }
+  .btn { background:var(--primary); color:#fff; border-radius:999px; padding:10px 20px; display:inline-block; margin:8px 4px 0 0; font-size:.9rem; }
+  .btn.tonal { background:var(--secondary-container); color:var(--on-primary-container); }
+  .row { display:flex; gap:10px; align-items:center; background:var(--surface-variant); border-radius:12px; padding:10px 12px; margin:8px 0; }
+  .dot { width:34px; height:34px; border-radius:50%; display:grid; place-items:center; color:#fff; font-weight:700; }
+  .qrgrid { width:110px; height:110px; background:
+      repeating-conic-gradient(#000 0 25%, #fff 0 50%) 0 0/20px 20px; border-radius:8px; }
+  code { background:var(--surface-variant); padding:2px 6px; border-radius:6px; font-size:.85em; }
+  footer { text-align:center; color:var(--on-surface-variant); padding:40px; font-size:.85rem; }
+</style>
+</head>
+<body>
+<header>
+  <h1>oneqr</h1>
+  <p>One QR code. Every social profile. Zero cloud.</p>
+</header>
+<main>
+
+<h2><span class="n">1</span>The problem</h2>
+<div class="card">
+  A person active on Instagram, X, YouTube, LinkedIn, and GitHub needs <b>five QR codes</b>,
+  or a link tree that demands an account, a subscription, and their data living on someone else's cloud.
+  <b>oneqr</b> collapses all of it: one QR → one tiny HTML page → every handle, straight to the visitor.
+</div>
+
+<h2><span class="n">2</span>How it works</h2>
+<div class="card flow">
+  <div class="step">① Add your links<br><small>platform + username</small></div><span class="arrow">→</span>
+  <div class="step">② Generate QR<br><small>one code, all links</small></div><span class="arrow">→</span>
+  <div class="step">③ Someone scans<br><small>plain camera app</small></div><span class="arrow">→</span>
+  <div class="step">④ Links render<br><small>Material 3 page</small></div>
+</div>
+
+<h2><span class="n">3</span>Two honest ways to deliver the page</h2>
+<div class="card">
+  <p><b>Mode A — zero cloud (default):</b> the QR encodes the entire viewer page as a
+  <code>data:text/html;base64,…</code> URL. Scan → the phone's browser opens the page directly. Nothing is hosted.
+  No recurring anything.</p>
+  <p><b>Mode B — static page, no account:</b> one <code>viewer.html</code> you host anywhere free (GitHub Pages, your site).
+  Your links ride in the URL hash: <code>viewer.html#ig=you&x=you</code>. The QR points there. No database, no cloud account.</p>
+  <p style="margin-bottom:0">The builder app generates both, plus a <b>download button</b> for the self-contained viewer file.</p>
+</div>
+
+<h2><span class="n">4</span>What the builder feels like</h2>
+<div class="phones">
+  <div class="phone">
+    <div class="mock-title">Builder — mobile</div>
+    <p class="mock-h1">Your links</p>
+    <div class="field">Platform · Instagram</div>
+    <div class="field">Username · @you</div>
+    <div class="row"><div class="dot" style="background:#E1306C">IG</div><div>Instagram · @you</div></div>
+    <div class="row"><div class="dot" style="background:#000">𝕏</div><div>X · @you</div></div>
+    <span class="btn tonal">＋ Add link</span>
+    <span class="btn">Generate QR</span>
+  </div>
+  <div class="phone">
+    <div class="mock-title">Viewer — what the scanner sees</div>
+    <p class="mock-h1">@you everywhere</p>
+    <div class="row"><div class="dot" style="background:#E1306C">IG</div><div><b>Instagram</b><br>@you</div></div>
+    <div class="row"><div class="dot" style="background:#000">𝕏</div><div><b>X</b><br>@you</div></div>
+    <div class="row"><div class="dot" style="background:#C4302B">YT</div><div><b>YouTube</b><br>you</div></div>
+  </div>
+</div>
+<div class="phones">
+  <div class="phone wide">
+    <div class="mock-title">Builder — desktop</div>
+    <p class="mock-h1">oneqr</p>
+    <p style="margin:0 0 12px">Add your socials on the left, QR on the right. Responsive Material 3 layout, same code.</p>
+    <div style="display:flex;gap:16px;flex-wrap:wrap">
+      <div style="flex:1;min-width:200px">
+        <div class="field">Platform · pick from list or custom</div>
+        <div class="field">Link or username</div>
+        <span class="btn tonal">＋ Add</span>
+      </div>
+      <div style="width:140px;text-align:center">
+        <div class="qrgrid" style="margin:0 auto"></div>
+        <span class="btn" style="margin-top:12px">Download HTML</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<h2><span class="n">5</span>Decisions I'm making (tell me if any is wrong)</h2>
+<div class="card">
+  <span class="pill">Name: oneqr</span>
+  <span class="pill">Static site, no build step</span>
+  <span class="pill">Material 3 tokens</span>
+  <span class="pill">Vendored QR library</span>
+  <span class="pill">Mode A default, Mode B offered</span>
+  <span class="pill">Preset platforms + custom</span>
+  <span class="pill">Responsive desktop + mobile</span>
+  <span class="pill">Product root: cooking/oneqr</span>
+</div>
+
+<h2><span class="n">6</span>Build order</h2>
+<div class="card">
+  1. PRODUCT.md + scaffold (index.html, styles, app.js)<br>
+  2. Builder UI — platform picker, add/reorder/remove, live preview<br>
+  3. QR generation — Mode A data-URL, Mode B hash link, HTML download<br>
+  4. Viewer template — Material 3 results page, fully responsive<br>
+  5. Impeccable detector pass + desktop/mobile screenshot review
+</div>
+
+<h2><span class="n">7</span>What I genuinely need from you</h2>
+<div class="card">
+  Nothing to start. Ideally, eventually: your real links for a demo, a logo/mark if you have one,
+  and a domain only if you'll actually host Mode B.
+</div>
+
+</main>
+<footer>oneqr · proposal rendered as a Material 3 page · reply "build it" and I start Phase 1</footer>
+</body>
+</html>

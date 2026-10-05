@@ -1,37 +1,3 @@
----
-import '../styles/global.css';
----
-<html lang="en">
-<head>
-<meta charset="utf-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>oneqr — builder</title>
-</head>
-<body>
-<header class="topbar">
-  <h1>oneqr</h1>
-  <p class="tagline">One QR · Every profile · Zero cloud</p>
-</header>
-<main>
-  <section class="card">
-    <h2>Your links</h2>
-    <div id="linkList"></div>
-    <label for="platform">Platform</label>
-    <select id="platform"></select>
-    <label for="handle">Username, handle, or URL</label>
-    <input type="text" id="handle" placeholder="@you" />
-    <button class="btn tonal" id="addBtn">＋ Add link</button>
-  </section>
-  <section class="card">
-    <h2>Your QR</h2>
-    <div id="qrBox">
-      <p class="hint">Add at least one link and generate.</p>
-      <button class="btn primary" id="genBtn">Generate QR</button>
-    </div>
-  </section>
-</main>
-<script is:inline src="/oneqr/vendor/qrcode.min.js"></script>
-<script>
 const PRESETS = [
   { id: 'ig', name: 'Instagram', color: '#E1306C', url: h => `https://instagram.com/${h}` },
   { id: 'x',  name: 'X',         color: '#000000', url: h => `https://x.com/${h}` },
@@ -48,6 +14,11 @@ const platformSel = document.getElementById('platform');
 const handleInput = document.getElementById('handle');
 const listEl = document.getElementById('linkList');
 const qrBox = document.getElementById('qrBox');
+
+if (location.protocol === 'file:') {
+  qrBox.insertAdjacentHTML('beforebegin',
+    '<p style="background:#FFD8E4;border-radius:12px;padding:12px 16px;margin:0 0 12px">⚠️ Open this page at <b>http://localhost:8080/index.html</b> — a <code>file://</code> URL QR code cannot open on a phone.</p>');
+}
 
 PRESETS.forEach(p => {
   const o = document.createElement('option');
@@ -71,14 +42,12 @@ function renderList() {
       <div><div class="name">${l.name}</div><div class="handle">${l.display}</div></div>
       <div class="spacer"></div>
       <button class="icon-btn" data-i="${i}" title="Remove">✕</button>`;
-    row.addEventListener('click', e => {
-      if (e.target.closest('button')) { links.splice(i, 1); renderList(); }
-    });
+    row.querySelector('button').onclick = () => { links.splice(i, 1); renderList(); };
     listEl.appendChild(row);
   });
 }
 
-document.getElementById('addBtn').addEventListener('click', () => {
+document.getElementById('addBtn').onclick = () => {
   const preset = PRESETS.find(p => p.id === platformSel.value);
   const raw = handleInput.value.trim();
   if (!raw) { handleInput.focus(); return; }
@@ -91,20 +60,18 @@ document.getElementById('addBtn').addEventListener('click', () => {
   });
   handleInput.value = '';
   renderList();
-});
+};
 
-document.getElementById('genBtn').addEventListener('click', () => {
+document.getElementById('genBtn').onclick = () => {
   if (!links.length) return;
   const params = links.map(l => `${l.id}=${encodeURIComponent(l.display)}`).join('&');
-  const target = `${location.origin}${import.meta.env.BASE_URL}viewer/#${params}`;
-  const qr = (window as any).qrcode(0, 'M');
+  const base = location.href.split('#')[0].replace(/index\.html$/, 'viewer.html');
+  const target = `${base}#${params}`;
+  const qr = qrcode(0, 'M');
   qr.addData(target);
   qr.make();
-  qrBox.innerHTML = `<img alt="QR for your links" src="${qr.createDataURL(8, 2)}" />
+  qrBox.innerHTML = `<img alt="QR for your links" src="${qr.createDataURL(8, 2)}">
     <p class="hint" style="word-break:break-all">${target}</p>`;
-});
+};
 
 renderList();
-</script>
-</body>
-</html>
